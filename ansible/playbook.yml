@@ -1,0 +1,29 @@
+# ansible/playbook.yml
+- hosts: all
+  become: yes
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    - name: Install Docker
+      apt:
+        name: docker.io
+        state: present
+
+    - name: Start Docker service
+      service:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: Copy app files
+      copy:
+        src: /home/ubuntu/app/
+        dest: /home/ubuntu/app/
+
+    - name: Build Docker image
+      command: docker build -t myapp /home/ubuntu/app/
+
+    - name: Run Docker container
+      command: docker run -d -p 80:5000 myapp

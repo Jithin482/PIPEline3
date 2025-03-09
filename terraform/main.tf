@@ -4,7 +4,7 @@ provider "aws" {
 
 # Create a security group that allows inbound traffic on ports 8080, 80 (HTTP), and 443 (HTTPS)
 resource "aws_security_group" "web_sg" {
-  name        = "web-instance-sg"
+  name        = "web-instance-sg-${timestamp()}"
   description = "Allow inbound traffic on ports 8080, 80 (HTTP), and 443 (HTTPS)"
 
   # Allow inbound traffic on port 8080

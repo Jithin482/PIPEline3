@@ -29,4 +29,4 @@
       ignore_errors: yes
 
     - name: Run Docker container
-      command: docker run -d -p 8080:5000 --name myapp-container myapp
+      command: docker run -d -p 8080:5000 --name myapp-container myapp  # Map 5000 (container) to 8080 (host)

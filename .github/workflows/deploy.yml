@@ -18,16 +18,24 @@ jobs:
       uses: hashicorp/setup-terraform@v1
 
     - name: Terraform Init
-      run: terraform init -chdir=./terraform
+      run: |
+        cd terraform
+        terraform init
 
     - name: Terraform Apply
-      run: terraform apply -auto-approve -chdir=./terraform
+      run: |
+        cd terraform
+        terraform apply -auto-approve
 
     - name: Install Ansible
       run: sudo apt-get install -y ansible
 
     - name: Copy Ansible inventory
-      run: echo "$(terraform output -raw instance_ips)" > ansible/inventory
+      run: |
+        cd terraform
+        echo "$(terraform output -raw instance_ips)" > ../ansible/inventory
 
     - name: Run Ansible Playbook
-      run: ansible-playbook -i ansible/inventory ansible/playbook.yml
+      run: |
+        cd ansible
+        ansible-playbook -i inventory playbook.yml

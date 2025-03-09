@@ -1,11 +1,10 @@
-# terraform/main.tf
 provider "aws" {
-  region = "eu-west-1"
+  region = "us-east-1"
 }
 
 resource "aws_instance" "web" {
-  count         = 3
-  ami           = "ami-03fd334507439f4d1" # Replace with your desired AMI
+  count         = 1  # Create only one instance
+  ami           = "ami-03fd334507439f4d1"  # Replace with your desired AMI
   instance_type = "t2.micro"
 
   tags = {

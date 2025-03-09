@@ -1,3 +1,8 @@
+provider "aws" {
+  region = "eu-west-1"
+}
+
+# Create a security group that allows inbound traffic on ports 8080, 80 (HTTP), and 443 (HTTPS)
 resource "aws_security_group" "web_sg" {
   name        = "web-instance-sg-${timestamp()}"
   description = "Allow inbound traffic on ports 8080, 80 (HTTP), and 443 (HTTPS)"
@@ -36,5 +41,17 @@ resource "aws_security_group" "web_sg" {
 
   tags = {
     Name = "web-instance-sg"
+  }
+}
+
+# Create the EC2 instance and attach the security group
+resource "aws_instance" "web" {
+  count         = 1  # Create only one instance
+  ami           = "ami-03fd334507439f4d1"  # Replace with your desired AMI
+  instance_type = "t2.micro"
+  security_groups = [aws_security_group.web_sg.name]  # Attach the security group
+
+  tags = {
+    Name = "web-instance-${count.index}"
   }
 }

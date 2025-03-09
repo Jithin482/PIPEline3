@@ -21,7 +21,7 @@ jobs:
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: us-east-1  # Replace with your desired AWS region
+        aws-region: us-east-1
 
     - name: Terraform Init
       run: |
@@ -33,15 +33,15 @@ jobs:
         cd terraform
         terraform apply -auto-approve
 
-    - name: Install Ansible
-      run: sudo apt-get install -y ansible
-
-    - name: Copy Ansible inventory
+    - name: Store Instance IPs
       run: |
         cd terraform
-        echo "$(terraform output -raw instance_ips)" > ../ansible/inventory
+        echo "$(terraform output -raw instance_ips)" >> ../instances.txt
+
+    - name: Install Ansible
+      run: sudo apt-get install -y ansible
 
     - name: Run Ansible Playbook
       run: |
         cd ansible
-        ansible-playbook -i inventory playbook.yml
+        ansible-playbook -i ../instances.txt playbook.yml

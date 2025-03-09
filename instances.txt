@@ -1,0 +1,4 @@
+- name: Store Instance IPs
+  run: |
+    cd terraform
+    echo "$(terraform output -raw instance_ips)" >> ../instances.txt

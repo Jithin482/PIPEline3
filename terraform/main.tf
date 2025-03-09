@@ -55,3 +55,8 @@ resource "aws_instance" "web" {
     Name = "web-instance-${count.index}"
   }
 }
+
+# Output the public IP of the EC2 instance
+output "instance_ips" {
+  value = aws_instance.web[*].public_ip
+}

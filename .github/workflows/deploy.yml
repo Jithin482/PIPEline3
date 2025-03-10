@@ -37,6 +37,7 @@ jobs:
     - name: Store Instance IPs
       run: |
         cd terraform
+        echo $instance_ip
         echo "$(terraform output -raw instance_ips)" > ../instances.txt
         cat $instance_ip
 
@@ -46,4 +47,4 @@ jobs:
     - name: Run Ansible Playbook
       run: |
         cd ansible
-        ansible-playbook -i $instance_ip playbook.yml
+        ansible-playbook -i inventory playbook.yml

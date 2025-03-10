@@ -37,6 +37,7 @@ jobs:
       run: |
         cd terraform
         echo "$(terraform output -raw instance_ips)" >> ../instances.txt
+        cat ../instance.txt
 
     - name: Install Ansible
       run: sudo apt-get install -y ansible

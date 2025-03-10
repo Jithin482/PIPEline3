@@ -1,5 +1,5 @@
 # ansible/inventory
 [web]
-<instance1_ip>
+$instance_ip
 <instance2_ip>
 <instance3_ip>

@@ -32,6 +32,7 @@ jobs:
       run: |
         cd terraform
         terraform apply -auto-approve
+        terraform output instance_ip > instance_ip
 
     - name: Store Instance IPs
       run: |
@@ -45,4 +46,4 @@ jobs:
     - name: Run Ansible Playbook
       run: |
         cd ansible
-        ansible-playbook -i ../instances.txt playbook.yml
+        ansible-playbook -i $instance_ip aybook.yml

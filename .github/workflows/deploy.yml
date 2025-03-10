@@ -37,8 +37,8 @@ jobs:
     - name: Store Instance IPs
       run: |
         cd terraform
-        echo "$(terraform output -raw instance_ips)" >> ../instances.txt
-        cat ../instance.txt
+        echo "$(terraform output -raw instance_ips)" > ../instances.txt
+        cat $instance_ip
 
     - name: Install Ansible
       run: sudo apt-get install -y ansible
@@ -46,4 +46,4 @@ jobs:
     - name: Run Ansible Playbook
       run: |
         cd ansible
-        ansible-playbook -i $instance_ip aybook.yml
+        ansible-playbook -i $instance_ip playbook.yml

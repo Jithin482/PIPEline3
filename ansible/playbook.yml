@@ -1,32 +1,15 @@
-- hosts: all
-  become: yes
-  tasks:
-    - name: Update apt cache
-      apt:
-        update_cache: yes
+---
+- name: Configure Web Server
+  hosts: web
+  become: true
 
-    - name: Install Docker
+  tasks:
+    - name: Install Apache
       apt:
-        name: docker.io
+        name: apache2
         state: present
 
-    - name: Start Docker service
-      service:
-        name: docker
-        state: started
-        enabled: yes
-
-    - name: Copy app files
+    - name: Copy Index File
       copy:
-        src: /home/ubuntu/app/
-        dest: /home/ubuntu/app/
-
-    - name: Build Docker image
-      command: docker build -t myapp /home/ubuntu/app/
-
-    - name: Stop and remove existing container
-      command: docker rm -f myapp-container
-      ignore_errors: yes
-
-    - name: Run Docker container
-      command: docker run -d -p 8080:5000 --name myapp-container myapp  # Map 5000 (container) to 8080 (host)
+        content: "Updated Index Page!"
+        dest: /var/www/html/index.html

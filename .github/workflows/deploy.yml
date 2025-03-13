@@ -1,4 +1,4 @@
-name: Deploy Application
+name: Deploy to AWS EC2
 
 on:
   push:
@@ -10,41 +10,38 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-    - name: Set up Terraform
-      uses: hashicorp/setup-terraform@v1
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v2
 
-    - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v2
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: eu-west-1
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
 
-    - name: Terraform Init
-      run: |
-        cd terraform
-        terraform init
+      - name: Initialize Terraform
+        run: terraform init
+        working-directory: terraform
 
-    - name: Terraform Apply
-      run: |
-        cd terraform
-        terraform apply -auto-approve
-        terraform output instance_ip > instance_ip
+      - name: Apply Terraform
+        run: terraform apply -auto-approve
+        working-directory: terraform
 
-    - name: Store Instance IPs
-      run: |
-        cd terraform
-        echo $instance_ip
-        echo "$(terraform output -raw instance_ips)" > ../instances.txt
-        cat $instance_ip
+      - name: Fetch EC2 Instance IP
+        run: |
+          echo "$(terraform output -raw instance_ip)" > instances.txt
+        working-directory: terraform
 
-    - name: Install Ansible
-      run: sudo apt-get install -y ansible
+      - name: Set up Ansible
+        run: |
+          sudo apt update
+          sudo apt install -y ansible
+          echo "[web]" > ansible/inventory
+          echo "$(cat terraform/instances.txt) ansible_user=ubuntu ansible_ssh_private_key_file=~/.ssh/id_rsa" >> ansible/inventory
 
-    - name: Run Ansible Playbook
-      run: |
-        cd ansible
-        ansible-playbook -i inventory playbook.yml
+      - name: Run Ansible Playbook
+        run: ansible-playbook -i ansible/inventory ansible/playbook.yml
